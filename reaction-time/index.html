@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reaction Time Game</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+  
+  <div class="container">
+    <h1>Reaction Time Test</h1>
+    <p class="subtitle">How fast are your reflexes?</p>
+
+    <div class="game-area" id="gameArea">
+      <div class="target" id="target">Click to Start</div>
+    </div>
+
+    <div class="result" id="result"></div>
+
+    <div class="stats">
+      <div class="stat-box">
+        <div class="stat-value" id="currentTime">0 ms</div>
+        <div class="stat-label">Current</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="bestTime">0 ms</div>
+        <div class="stat-label">Best</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="averageTime">0 ms</div>
+        <div class="stat-label">Average</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="startBtn">Start Game</button>
+      <button id="resetBtn">Reset Stats</button>
+    </div>
+
+    <div class="mobile-tip">
+      <strong>Tip:</strong> Hold your phone with both hands for better reaction times!
+    </div>
+
+    <div class="mobile-only">
+      <p>Tap "Start Game", wait for the circle to turn green, then tap it as fast as you can!</p>
+    </div>
+
+    <div class="history">
+      <h3>Recent Results</h3>
+      <div class="history-list" id="historyList"></div>
+    </div>
+
+    <div class="instructions">
+      <h3>How to Play</h3>
+      <ol>
+        <li>Click "Start Game" to begin</li>
+        <li>Wait for the target to turn green and start pulsing</li>
+        <li>Click the target as quickly as possible when it activates</li>
+        <li>Your reaction time will be measured in milliseconds</li>
+        <li>Try to improve your best time with practice!</li>
+      </ol>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
