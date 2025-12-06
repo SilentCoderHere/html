@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reaction Time Game</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      animation: float 15s infinite linear;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) translateX(100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(15px);
+      border-radius: 24px;
+      padding: 35px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      z-index: 1;
+      animation: containerAppear 1s ease-out;
+    }
+
+    @keyframes containerAppear {
+      0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(to right, #ff7e5f, #feb47b, #6a11cb, #2575fc);
+      border-radius: 24px 24px 0 0;
+      animation: rainbow 8s infinite linear;
+    }
+
+    @keyframes rainbow {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      margin-bottom: 10px;
+      background: linear-gradient(to right, #ff7e5f, #feb47b, #6a11cb, #2575fc);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      letter-spacing: 1px;
+      position: relative;
+      display: inline-block;
+      animation: titleGlow 3s infinite alternate;
+    }
+
+    @keyframes titleGlow {
+      0% {
+        text-shadow: 0 0 5px rgba(255, 126, 95, 0.5);
+      }
+      100% {
+        text-shadow: 0 0 20px rgba(255, 126, 95, 0.8), 0 0 30px rgba(254, 180, 123, 0.6);
+      }
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 10%;
+      width: 80%;
+      height: 3px;
+      background: linear-gradient(to right, transparent, #ff7e5f, #feb47b, transparent);
+      border-radius: 3px;
+      animation: linePulse 2s infinite;
+    }
+
+    @keyframes linePulse {
+      0%, 100% {
+        transform: scaleX(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scaleX(1.1);
+        opacity: 0.7;
+      }
+    }
+
+    .subtitle {
+      font-size: 1.3rem;
+      margin-bottom: 30px;
+      color: #cbd5e1;
+      font-weight: 300;
+      letter-spacing: 0.5px;
+      animation: fadeIn 1.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .game-area {
+      position: relative;
+      height: 350px;
+      margin: 30px 0;
+      border-radius: 20px;
+      overflow: hidden;
+      background: rgba(30, 41, 59, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.4s;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3), 0 5px 25px rgba(0, 0, 0, 0.4);
+      animation: gameAreaPulse 4s infinite alternate;
+    }
+
+    @keyframes gameAreaPulse {
+      0% {
+        box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3), 0 5px 25px rgba(0, 0, 0, 0.4);
+      }
+      100% {
+        box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3), 0 5px 25px rgba(106, 17, 203, 0.3);
+      }
+    }
+
+    .game-area:hover {
+      background: rgba(30, 41, 59, 0.6);
+      transform: translateY(-5px);
+      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3), 0 8px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .target {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff7e5f, #feb47b);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.3rem;
+      box-shadow: 0 0 30px rgba(255, 126, 95, 0.8);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      user-select: none;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+      animation: targetFloat 6s infinite ease-in-out;
+    }
+
+    @keyframes targetFloat {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+      }
+      50% {
+        transform: translateY(-10px) scale(1.03);
+      }
+    }
+
+    .target::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+      border-radius: 50%;
+      z-index: 1;
+      animation: targetRotate 10s infinite linear;
+    }
+
+    @keyframes targetRotate {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .target:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 40px rgba(255, 126, 95, 1);
+    }
+
+    .target.waiting {
+      background: linear-gradient(135deg, #FFC107, #FF9800);
+      box-shadow: 0 0 30px rgba(255, 193, 7, 0.8);
+      animation: waitingPulse 2s infinite;
+    }
+
+    @keyframes waitingPulse {
+      0%, 100% {
+        box-shadow: 0 0 20px rgba(255, 193, 7, 0.6);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 40px rgba(255, 193, 7, 0.9);
+        transform: scale(1.05);
+      }
+    }
+
+    .target.active {
+      animation: activePulse 1s infinite, targetFloat 6s infinite ease-in-out;
+      background: linear-gradient(135deg, #4CAF50, #45a049);
+      box-shadow: 0 0 30px rgba(76, 175, 80, 0.8);
+    }
+
+    @keyframes activePulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 25px rgba(76, 175, 80, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+      }
+    }
+
+    .target.too-soon {
+      background: linear-gradient(135deg, #F44336, #d32f2f);
+      box-shadow: 0 0 30px rgba(244, 67, 54, 0.8);
+      animation: shake 0.5s, flashRed 0.5s 3;
+    }
+
+    @keyframes flashRed {
+      0%, 100% {
+        background: linear-gradient(135deg, #F44336, #d32f2f);
+      }
+      50% {
+        background: linear-gradient(135deg, #ff8a80, #F44336);
+      }
+    }
+
+    .target.success {
+      background: linear-gradient(135deg, #2196F3, #1976D2);
+      box-shadow: 0 0 30px rgba(33, 150, 243, 0.8);
+      animation: successSpin 0.8s, successPulse 1.5s infinite;
+    }
+
+    @keyframes successSpin {
+      0% {
+        transform: rotate(0deg) scale(1);
+      }
+      50% {
+        transform: rotate(180deg) scale(1.2);
+      }
+      100% {
+        transform: rotate(360deg) scale(1);
+      }
+    }
+
+    @keyframes successPulse {
+      0%, 100% {
+        box-shadow: 0 0 20px rgba(33, 150, 243, 0.8);
+      }
+      50% {
+        box-shadow: 0 0 40px rgba(33, 150, 243, 1);
+      }
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 25px 0;
+      flex-wrap: wrap;
+    }
+
+    .stat-box {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.8));
+      padding: 20px;
+      border-radius: 15px;
+      min-width: 140px;
+      margin: 10px;
+      flex: 1;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: 0.5s;
+    }
+
+    .stat-box:hover::before {
+      left: 100%;
+    }
+
+    .stat-box:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .stat-value {
+      font-size: 2.2rem;
+      font-weight: bold;
+      margin: 5px 0;
+      background: linear-gradient(to right, #ff7e5f, #feb47b);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      animation: countUp 0.5s ease-out;
+    }
+
+    @keyframes countUp {
+      from {
+        transform: scale(1.2);
+        opacity: 0.5;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .stat-label {
+      font-size: 1rem;
+      color: #94a3b8;
+      letter-spacing: 0.5px;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 25px;
+    }
+
+    button {
+      padding: 14px 30px;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(to right, #ff7e5f, #feb47b);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: 0.5s;
+    }
+
+    button:hover::before {
+      left: 100%;
+    }
+
+    button:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    button:active {
+      transform: translateY(2px);
+    }
+
+    button:disabled {
+      background: #475569;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .instructions {
+      margin-top: 35px;
+      padding: 20px;
+      background: rgba(30, 41, 59, 0.5);
+      border-radius: 15px;
+      text-align: left;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      animation: slideUp 1s ease-out;
+    }
+
+    @keyframes slideUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .instructions h3 {
+      margin-bottom: 15px;
+      color: #ff7e5f;
+      font-size: 1.4rem;
+      text-align: center;
+    }
+
+    .instructions ol {
+      padding-left: 25px;
+    }
+
+    .instructions li {
+      margin-bottom: 12px;
+      line-height: 1.5;
+      color: #cbd5e1;
+      position: relative;
+    }
+
+    .instructions li::before {
+      content: '▶';
+      position: absolute;
+      left: -20px;
+      color: #ff7e5f;
+      font-size: 0.8rem;
+    }
+
+    .result {
+      font-size: 1.7rem;
+      margin: 25px 0;
+      min-height: 45px;
+      font-weight: bold;
+      transition: all 0.3s;
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(30, 41, 59, 0.4);
+      animation: resultPop 0.5s ease-out;
+    }
+
+    @keyframes resultPop {
+      0% {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      70% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .fast {
+      color: #4CAF50;
+      text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+      animation: fastGlow 2s infinite alternate;
+    }
+
+    @keyframes fastGlow {
+      0% {
+        text-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+      }
+      100% {
+        text-shadow: 0 0 15px rgba(76, 175, 80, 0.8), 0 0 20px rgba(76, 175, 80, 0.6);
+      }
+    }
+
+    .medium {
+      color: #FFC107;
+      text-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+    }
+
+    .slow {
+      color: #F44336;
+      text-shadow: 0 0 10px rgba(244, 67, 54, 0.5);
+    }
+
+    .history {
+      margin-top: 25px;
+      max-height: 180px;
+      overflow-y: auto;
+      background: rgba(30, 41, 59, 0.5);
+      border-radius: 15px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      animation: slideUp 1.2s ease-out;
+    }
+
+    .history h3 {
+      margin-bottom: 15px;
+      color: #ff7e5f;
+      font-size: 1.4rem;
+      text-align: center;
+    }
+
+    .history-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .history-item {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 10px 18px;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: bold;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s;
+      animation: historyItemAppear 0.5s ease-out;
+    }
+
+    @keyframes historyItemAppear {
+      0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .history-item:hover {
+      transform: scale(1.1);
+    }
+
+    .mobile-only {
+      display: none;
+    }
+
+    .mobile-tip {
+      background: rgba(30, 41, 59, 0.5);
+      padding: 15px;
+      border-radius: 15px;
+      margin-top: 20px;
+      font-size: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      animation: slideUp 1.4s ease-out;
+    }
+
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background: #f00;
+      opacity: 0;
+      z-index: 1000;
+      animation: confettiFall 5s ease-in-out;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .container {
+        padding: 25px 15px;
+      }
+
+      h1 {
+        font-size: 2.3rem;
+      }
+
+      .subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 25px;
+      }
+
+      .game-area {
+        height: 280px;
+        margin: 25px 0;
+      }
+
+      .target {
+        width: 120px;
+        height: 120px;
+        font-size: 1.1rem;
+      }
+
+      .stat-box {
+        min-width: 110px;
+        padding: 15px;
+      }
+
+      .stat-value {
+        font-size: 1.8rem;
+      }
+
+      button {
+        padding: 12px 25px;
+        font-size: 1rem;
+      }
+
+      .instructions,
+      .history {
+        display: none;
+      }
+
+      .mobile-only {
+        display: block;
+        margin-top: 20px;
+        font-size: 1rem;
+        color: #cbd5e1;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats {
+        flex-direction: column;
+      }
+
+      .controls {
+        flex-direction: column;
+      }
+
+      .game-area {
+        height: 230px;
+      }
+
+      .target {
+        width: 100px;
+        height: 100px;
+        font-size: 1rem;
+      }
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(30, 41, 59, 0.5);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(to bottom, #ff7e5f, #feb47b);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(to bottom, #ff7e5f, #ff9966);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="particles" id="particles"></div>
+  
+  <div class="container">
+    <h1>Reaction Time Test</h1>
+    <p class="subtitle">How fast are your reflexes?</p>
+
+    <div class="game-area" id="gameArea">
+      <div class="target" id="target">Click to Start</div>
+    </div>
+
+    <div class="result" id="result"></div>
+
+    <div class="stats">
+      <div class="stat-box">
+        <div class="stat-value" id="currentTime">0 ms</div>
+        <div class="stat-label">Current</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="bestTime">0 ms</div>
+        <div class="stat-label">Best</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="averageTime">0 ms</div>
+        <div class="stat-label">Average</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="startBtn"><i class="fas fa-play"></i> Start Game</button>
+      <button id="resetBtn"><i class="fas fa-redo"></i> Reset Stats</button>
+    </div>
+
+    <div class="mobile-tip">
+      <strong>Tip:</strong> Hold your phone with both hands for better reaction times!
+    </div>
+
+    <div class="mobile-only">
+      <p>Tap "Start Game", wait for the circle to turn green, then tap it as fast as you can!</p>
+    </div>
+
+    <div class="history">
+      <h3>Recent Results</h3>
+      <div class="history-list" id="historyList"></div>
+    </div>
+
+    <div class="instructions">
+      <h3>How to Play</h3>
+      <ol>
+        <li>Click "Start Game" to begin</li>
+        <li>Wait for the target to turn green and start pulsing</li>
+        <li>Click the target as quickly as possible when it activates</li>
+        <li>Your reaction time will be measured in milliseconds</li>
+        <li>Try to improve your best time with practice!</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    // Game elements
+    const target = document.getElementById('target');
+    const startBtn = document.getElementById('startBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const result = document.getElementById('result');
+    const currentTime = document.getElementById('currentTime');
+    const bestTime = document.getElementById('bestTime');
+    const averageTime = document.getElementById('averageTime');
+    const historyList = document.getElementById('historyList');
+    const particlesContainer = document.getElementById('particles');
+
+    // Create floating particles
+    function createParticles() {
+      for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        const size = Math.random() * 10 + 5;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        
+        particle.style.left = `${Math.random() * 100}vw`;
+        particle.style.top = `${Math.random() * 100}vh`;
+        
+        const animationDuration = Math.random() * 20 + 10;
+        particle.style.animationDuration = `${animationDuration}s`;
+        particle.style.animationDelay = `${Math.random() * 5}s`;
+        
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    // Create confetti effect
+    function createConfetti() {
+      const colors = ['#ff7e5f', '#feb47b', '#6a11cb', '#2575fc', '#4CAF50', '#FFC107', '#F44336'];
+      
+      for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.backgroundColor = color;
+        
+        const size = Math.random() * 10 + 5;
+        confetti.style.width = `${size}px`;
+        confetti.style.height = `${size}px`;
+        
+        confetti.style.left = `${Math.random() * 100}vw`;
+        confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
+        confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+        
+        document.body.appendChild(confetti);
+        
+        // Remove confetti after animation
+        setTimeout(() => {
+          confetti.remove();
+        }, 5000);
+      }
+    }
+
+    // Game state
+    const gameState = {
+      IDLE: 'idle',
+      WAITING: 'waiting',
+      ACTIVE: 'active',
+      FINISHED: 'finished'
+    };
+
+    // Game variables
+    let state = gameState.IDLE;
+    let startTime;
+    let timeoutId;
+    let reactionTimes = [];
+    let bestReactionTime = Infinity;
+
+    // Initialize from localStorage if available
+    function initializeGame() {
+      if (localStorage.getItem('reactionTimes')) {
+        reactionTimes = JSON.parse(localStorage.getItem('reactionTimes'));
+        updateStats();
+      }
+
+      if (localStorage.getItem('bestReactionTime')) {
+        bestReactionTime = parseInt(localStorage.getItem('bestReactionTime'));
+        bestTime.textContent = bestReactionTime + ' ms';
+      }
+
+      updateHistoryDisplay();
+      createParticles();
+    }
+
+    // Start game function
+    function startGame() {
+      if (state !== gameState.IDLE) return;
+
+      state = gameState.WAITING;
+      startBtn.disabled = true;
+      result.textContent = '';
+      target.textContent = 'Wait...';
+      target.classList.remove('active', 'too-soon', 'success');
+      target.classList.add('waiting');
+
+      // Random delay between 1 and 5 seconds
+      const delay = Math.random() * 4000 + 1000;
+
+      timeoutId = setTimeout(() => {
+        if (state === gameState.WAITING) {
+          state = gameState.ACTIVE;
+          target.textContent = 'Click Now!';
+          target.classList.remove('waiting');
+          target.classList.add('active');
+          startTime = Date.now();
+        }
+      }, delay);
+    }
+
+    // Handle target click
+    function handleTargetClick() {
+      switch (state) {
+        case gameState.IDLE:
+          // Start the game if idle
+          startGame();
+          break;
+
+        case gameState.WAITING:
+          // Clicked too soon
+          state = gameState.FINISHED;
+          clearTimeout(timeoutId);
+          target.textContent = 'Too Soon!';
+          target.classList.remove('waiting');
+          target.classList.add('too-soon');
+          result.textContent = 'You clicked too early! Wait for green.';
+          result.className = 'result slow';
+
+          // Reset after delay
+          setTimeout(resetGame, 1500);
+          break;
+
+        case gameState.ACTIVE:
+          // Valid reaction click - IMMEDIATE FEEDBACK
+          const endTime = Date.now();
+          const reactionTime = endTime - startTime;
+
+          // Immediately update the target appearance
+          target.textContent = reactionTime + ' ms';
+          target.classList.remove('active');
+          target.classList.add('success');
+
+          // Create confetti for good times
+          if (reactionTime < 250) {
+            createConfetti();
+          }
+
+          processResult(reactionTime);
+          break;
+
+        case gameState.FINISHED:
+          // Do nothing, game is finished
+          break;
+      }
+    }
+
+    // Process the game result
+    function processResult(reactionTime) {
+      state = gameState.FINISHED;
+
+      // Store result
+      reactionTimes.push(reactionTime);
+
+      if (reactionTime < bestReactionTime) {
+        bestReactionTime = reactionTime;
+        localStorage.setItem('bestReactionTime', bestReactionTime.toString());
+      }
+
+      // Save to localStorage
+      localStorage.setItem('reactionTimes', JSON.stringify(reactionTimes));
+
+      // Update UI
+      updateStats();
+      displayResult(reactionTime);
+      addToHistory(reactionTime);
+
+      // Reset after shorter delay
+      setTimeout(resetGame, 2000);
+    }
+
+    // Reset game to initial state
+    function resetGame() {
+      state = gameState.IDLE;
+      startTime = null;
+      target.textContent = 'Click to Start';
+      target.classList.remove('active', 'waiting', 'too-soon', 'success');
+      startBtn.disabled = false;
+    }
+
+    // Update statistics
+    function updateStats() {
+      if (reactionTimes.length > 0) {
+        const current = reactionTimes[reactionTimes.length - 1];
+        currentTime.textContent = current + ' ms';
+
+        const sum = reactionTimes.reduce((a, b) => a + b, 0);
+        const average = Math.round(sum / reactionTimes.length);
+        averageTime.textContent = average + ' ms';
+
+        bestTime.textContent = bestReactionTime + ' ms';
+      }
+    }
+
+    // Display result with appropriate color
+    function displayResult(time) {
+      result.textContent = `Reaction time: ${time} ms`;
+
+      if (time < 200) {
+        result.className = 'result fast';
+        result.textContent += ' - Incredible!';
+      } else if (time < 300) {
+        result.className = 'result fast';
+        result.textContent += ' - Very Fast!';
+      } else if (time < 400) {
+        result.className = 'result medium';
+        result.textContent += ' - Good!';
+      } else if (time < 500) {
+        result.className = 'result medium';
+        result.textContent += ' - Average';
+      } else {
+        result.className = 'result slow';
+        result.textContent += ' - A bit slow';
+      }
+    }
+
+    // Add result to history
+    function addToHistory(time) {
+      const historyItem = document.createElement('div');
+      historyItem.className = 'history-item';
+      historyItem.textContent = time + ' ms';
+
+      // Color code based on speed
+      if (time < 200) {
+        historyItem.style.background = 'rgba(76, 175, 80, 0.3)';
+      } else if (time < 300) {
+        historyItem.style.background = 'rgba(139, 195, 74, 0.3)';
+      } else if (time < 400) {
+        historyItem.style.background = 'rgba(255, 193, 7, 0.3)';
+      } else if (time < 500) {
+        historyItem.style.background = 'rgba(255, 152, 0, 0.3)';
+      } else {
+        historyItem.style.background = 'rgba(244, 67, 54, 0.3)';
+      }
+
+      historyList.appendChild(historyItem);
+
+      // Keep only last 10 results
+      while (historyList.children.length > 10) {
+        historyList.removeChild(historyList.firstChild);
+      }
+    }
+
+    // Update history display
+    function updateHistoryDisplay() {
+      historyList.innerHTML = '';
+      reactionTimes.slice(-10).forEach(time => addToHistory(time));
+    }
+
+    // Reset statistics
+    function resetStats() {
+      reactionTimes = [];
+      bestReactionTime = Infinity;
+      localStorage.removeItem('reactionTimes');
+      localStorage.removeItem('bestReactionTime');
+      currentTime.textContent = '0 ms';
+      bestTime.textContent = '0 ms';
+      averageTime.textContent = '0 ms';
+      result.textContent = '';
+      historyList.innerHTML = '';
+
+      if (state !== gameState.IDLE) {
+        resetGame();
+      }
+    }
+
+    // Event listeners
+    startBtn.addEventListener('click', startGame);
+    resetBtn.addEventListener('click', resetStats);
+    target.addEventListener('click', handleTargetClick);
+
+    // Touch event listeners for better mobile responsiveness
+    target.addEventListener('touchstart', function (e) {
+      e.preventDefault();
+      handleTargetClick();
+    });
+
+    // Prevent zoom on double-tap for better game experience
+    document.addEventListener('touchstart', function (e) {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (e) {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) {
+        e.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
+
+    // Initialize the game
+    initializeGame();
+  </script>
+</body>
+
+</html>
