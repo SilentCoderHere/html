@@ -1,653 +1,698 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pathfinder Challenge</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pathfinder Challenge</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533483);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-        }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533483);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
 
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+    @keyframes gradient {
+      0% {
+        background-position: 0% 50%;
+      }
 
-        .screen {
-            display: none;
-            width: 100%;
-            max-width: 800px;
-            padding: 20px;
-        }
+      50% {
+        background-position: 100% 50%;
+      }
 
-        .active {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            animation: fadeIn 0.5s ease;
-        }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    .screen {
+      display: none;
+      width: 100%;
+      max-width: 800px;
+      padding: 20px;
+    }
 
-        /* HOME SCREEN STYLES */
-        .home-container {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 3rem 2rem;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
+    .active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 0.5s ease;
+    }
 
-        .logo {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            animation: float 3s ease-in-out infinite;
-        }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
+    /* HOME SCREEN STYLES */
+    .home-container {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 3rem 2rem;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
 
-        .subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            color: #e0e0e0;
-        }
+    .logo {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      animation: float 3s ease-in-out infinite;
+    }
 
-        .difficulty-selector {
-            display: flex;
-            gap: 15px;
-            margin: 2rem 0;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+    @keyframes float {
 
-        .difficulty-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid transparent;
-            padding: 12px 25px;
-            border-radius: 50px;
-            color: white;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
+      0%,
+      100% {
+        transform: translateY(0);
+      }
 
-        .difficulty-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-        }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
 
-        .difficulty-btn.active {
-            border-color: #48dbfb;
-            background: rgba(72, 219, 251, 0.2);
-            box-shadow: 0 5px 15px rgba(72, 219, 251, 0.4);
-        }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
 
-        .start-btn {
-            background: linear-gradient(45deg, #ff6b6b, #feca57);
-            border: none;
-            padding: 15px 40px;
-            border-radius: 50px;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 1rem;
-            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
-        }
+    .subtitle {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      color: #e0e0e0;
+    }
 
-        .start-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 25px rgba(255, 107, 107, 0.4);
-        }
+    .difficulty-selector {
+      display: flex;
+      gap: 15px;
+      margin: 2rem 0;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
 
-        /* GAME SCREEN STYLES */
-        .game-container {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
+    .difficulty-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid transparent;
+      padding: 12px 25px;
+      border-radius: 50px;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
 
-        .game-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
+    .difficulty-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-3px);
+    }
 
-        .game-stats {
-            display: flex;
-            gap: 20px;
-        }
+    .difficulty-btn.active {
+      border-color: #48dbfb;
+      background: rgba(72, 219, 251, 0.2);
+      box-shadow: 0 5px 15px rgba(72, 219, 251, 0.4);
+    }
 
-        .stat {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px 20px;
-            border-radius: 10px;
-            text-align: center;
-            min-width: 80px;
-        }
+    .start-btn {
+      background: linear-gradient(45deg, #ff6b6b, #feca57);
+      border: none;
+      padding: 15px 40px;
+      border-radius: 50px;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+      box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+    }
 
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #48dbfb;
-        }
+    .start-btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 25px rgba(255, 107, 107, 0.4);
+    }
 
-        .stat-label {
-            font-size: 0.8rem;
-            color: #b0b0b0;
-        }
+    /* GAME SCREEN STYLES */
+    .game-container {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
 
-        .board-container {
-            display: flex;
-            justify-content: center;
-            margin: 1.5rem 0;
-        }
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
 
-        .board {
-            display: inline-grid;
-            gap: 3px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 5px;
-            border-radius: 10px;
-        }
+    .game-stats {
+      display: flex;
+      gap: 20px;
+    }
 
-        .cell {
-            width: 50px;
-            height: 50px;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            user-select: none;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+    .stat {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 10px 20px;
+      border-radius: 10px;
+      text-align: center;
+      min-width: 80px;
+    }
 
-        .cell:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #48dbfb;
+    }
 
-        .cell.start {
-            background: linear-gradient(45deg, #4CAF50, #45a049);
-            animation: pulse 2s infinite;
-        }
+    .stat-label {
+      font-size: 0.8rem;
+      color: #b0b0b0;
+    }
 
-        .cell.end {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
-            animation: pulse 2s infinite;
-        }
+    .board-container {
+      display: flex;
+      justify-content: center;
+      margin: 1.5rem 0;
+    }
 
-        .cell.correct {
-            background: linear-gradient(45deg, #48dbfb, #0abde3);
-            transform: scale(0.95);
-        }
+    .board {
+      display: inline-grid;
+      gap: 3px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 5px;
+      border-radius: 10px;
+    }
 
-        .cell.wrong {
-            background: linear-gradient(45deg, #ff9ff3, #f368e0);
-            animation: shake 0.5s;
-        }
+    .cell {
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+      user-select: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
+    .cell:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
+    .cell.start {
+      background: linear-gradient(45deg, #4CAF50, #45a049);
+      animation: pulse 2s infinite;
+    }
 
-        #message {
-            text-align: center;
-            font-size: 1.1rem;
-            margin: 1rem 0;
-            min-height: 1.5em;
-            padding: 10px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.1);
-        }
+    .cell.end {
+      background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+      animation: pulse 2s infinite;
+    }
 
-        .game-controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 1rem;
-        }
+    .cell.correct {
+      background: linear-gradient(45deg, #48dbfb, #0abde3);
+      transform: scale(0.95);
+    }
 
-        .game-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
+    .cell.wrong {
+      background: linear-gradient(45deg, #ff9ff3, #f368e0);
+      animation: shake 0.5s;
+    }
 
-        .game-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
 
-        .back-btn {
-            background: rgba(255, 107, 107, 0.3);
-        }
+      50% {
+        transform: scale(1.05);
+      }
 
-        /* RESPONSIVE DESIGN */
-        @media (max-width: 768px) {
-            .home-container, .game-container {
-                padding: 1.5rem;
-            }
-            
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            .logo {
-                font-size: 3rem;
-            }
-            
-            .cell {
-                width: 40px;
-                height: 40px;
-                font-size: 0.9rem;
-            }
-            
-            .game-header {
-                flex-direction: column;
-                text-align: center;
-            }
-        }
+      100% {
+        transform: scale(1);
+      }
+    }
 
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .logo {
-                font-size: 2.5rem;
-            }
-            
-            .cell {
-                width: 35px;
-                height: 35px;
-                font-size: 0.8rem;
-            }
-            
-            .difficulty-selector {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .difficulty-btn {
-                width: 200px;
-            }
-        }
-    </style>
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-5px);
+      }
+
+      75% {
+        transform: translateX(5px);
+      }
+    }
+
+    #message {
+      text-align: center;
+      font-size: 1.1rem;
+      margin: 1rem 0;
+      min-height: 1.5em;
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .game-controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 1rem;
+    }
+
+    .game-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 50px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .game-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .back-btn {
+      background: rgba(255, 107, 107, 0.3);
+    }
+
+    /* RESPONSIVE DESIGN */
+    @media (max-width: 768px) {
+
+      .home-container,
+      .game-container {
+        padding: 1.5rem;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+      }
+
+      .logo {
+        font-size: 3rem;
+      }
+
+      .cell {
+        width: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+      }
+
+      .game-header {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .logo {
+        font-size: 2.5rem;
+      }
+
+      .cell {
+        width: 35px;
+        height: 35px;
+        font-size: 0.8rem;
+      }
+
+      .difficulty-selector {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .difficulty-btn {
+        width: 200px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <!-- HOME SCREEN -->
-    <div id="homeScreen" class="screen active">
-        <div class="home-container">
-            <div class="logo">🧩</div>
-            <h1>Pathfinder Challenge</h1>
-            <p class="subtitle">Find the hidden path in this mind-bending puzzle adventure</p>
-            
-            <div class="difficulty-selector">
-                <button class="difficulty-btn active" data-difficulty="5">Easy (5×5)</button>
-                <button class="difficulty-btn" data-difficulty="7">Medium (7×7)</button>
-                <button class="difficulty-btn" data-difficulty="9">Hard (9×9)</button>
-                <button class="difficulty-btn" data-difficulty="11">Expert (11×11)</button>
-            </div>
-            
-            <button id="startBtn" class="start-btn">Start Challenge</button>
-        </div>
+  <!-- HOME SCREEN -->
+  <div id="homeScreen" class="screen active">
+    <div class="home-container">
+      <div class="logo">🧩</div>
+      <h1>Pathfinder Challenge</h1>
+      <p class="subtitle">Find the hidden path in this mind-bending puzzle adventure</p>
+
+      <div class="difficulty-selector">
+        <button class="difficulty-btn active" data-difficulty="5">Easy (5×5)</button>
+        <button class="difficulty-btn" data-difficulty="7">Medium (7×7)</button>
+        <button class="difficulty-btn" data-difficulty="9">Hard (9×9)</button>
+        <button class="difficulty-btn" data-difficulty="11">Expert (11×11)</button>
+      </div>
+
+      <button id="startBtn" class="start-btn">Start Challenge</button>
     </div>
+  </div>
 
-    <!-- GAME SCREEN -->
-    <div id="gameScreen" class="screen">
-        <div class="game-container">
-            <div class="game-header">
-                <h2>Pathfinder Challenge</h2>
-                <div class="game-stats">
-                    <div class="stat">
-                        <div class="stat-value" id="score">0</div>
-                        <div class="stat-label">Score</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value" id="moves">0</div>
-                        <div class="stat-label">Moves</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value" id="time">0</div>
-                        <div class="stat-label">Time</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="board-container">
-                <div id="board" class="board"></div>
-            </div>
-            
-            <div id="message">Find the path from START to END!</div>
-            
-            <div class="game-controls">
-                <button id="backBtn" class="game-btn back-btn">← Home</button>
-                <button id="newGameBtn" class="game-btn">New Game</button>
-            </div>
+  <!-- GAME SCREEN -->
+  <div id="gameScreen" class="screen">
+    <div class="game-container">
+      <div class="game-header">
+        <h2>Pathfinder Challenge</h2>
+        <div class="game-stats">
+          <div class="stat">
+            <div class="stat-value" id="score">0</div>
+            <div class="stat-label">Score</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="moves">0</div>
+            <div class="stat-label">Moves</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="time">0</div>
+            <div class="stat-label">Time</div>
+          </div>
         </div>
+      </div>
+
+      <div class="board-container">
+        <div id="board" class="board"></div>
+      </div>
+
+      <div id="message">Find the path from START to END!</div>
+
+      <div class="game-controls">
+        <button id="backBtn" class="game-btn back-btn">← Home</button>
+        <button id="newGameBtn" class="game-btn">New Game</button>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // Game state
-        let gameState = {
-            boardSize: 5,
-            currentPath: [],
-            correctPath: [],
-            gameOver: false,
-            score: 0,
-            moves: 0,
-            startTime: null,
-            timer: null,
-            difficulty: 5
-        };
+  <script>
+    // Game state
+    let gameState = {
+      boardSize: 5,
+      currentPath: [],
+      correctPath: [],
+      gameOver: false,
+      score: 0,
+      moves: 0,
+      startTime: null,
+      timer: null,
+      difficulty: 5
+    };
 
-        // DOM Elements
-        const homeScreen = document.getElementById('homeScreen');
-        const gameScreen = document.getElementById('gameScreen');
-        const startBtn = document.getElementById('startBtn');
-        const backBtn = document.getElementById('backBtn');
-        const newGameBtn = document.getElementById('newGameBtn');
-        const boardElement = document.getElementById('board');
-        const messageElement = document.getElementById('message');
-        const scoreElement = document.getElementById('score');
-        const movesElement = document.getElementById('moves');
-        const timeElement = document.getElementById('time');
-        const difficultyBtns = document.querySelectorAll('.difficulty-btn');
+    // DOM Elements
+    const homeScreen = document.getElementById('homeScreen');
+    const gameScreen = document.getElementById('gameScreen');
+    const startBtn = document.getElementById('startBtn');
+    const backBtn = document.getElementById('backBtn');
+    const newGameBtn = document.getElementById('newGameBtn');
+    const boardElement = document.getElementById('board');
+    const messageElement = document.getElementById('message');
+    const scoreElement = document.getElementById('score');
+    const movesElement = document.getElementById('moves');
+    const timeElement = document.getElementById('time');
+    const difficultyBtns = document.querySelectorAll('.difficulty-btn');
 
-        // Event Listeners
-        startBtn.addEventListener('click', startGame);
-        backBtn.addEventListener('click', showHomeScreen);
-        newGameBtn.addEventListener('click', startNewGame);
+    // Event Listeners
+    startBtn.addEventListener('click', startGame);
+    backBtn.addEventListener('click', showHomeScreen);
+    newGameBtn.addEventListener('click', startNewGame);
 
-        difficultyBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                difficultyBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                gameState.difficulty = parseInt(btn.dataset.difficulty);
-            });
+    difficultyBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        difficultyBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        gameState.difficulty = parseInt(btn.dataset.difficulty);
+      });
+    });
+
+    // Screen Management
+    function showHomeScreen() {
+      gameScreen.classList.remove('active');
+      homeScreen.classList.add('active');
+      clearInterval(gameState.timer);
+    }
+
+    function showGameScreen() {
+      homeScreen.classList.remove('active');
+      gameScreen.classList.add('active');
+    }
+
+    // Game Functions
+    function startGame() {
+      gameState.boardSize = gameState.difficulty;
+      showGameScreen();
+      initGame();
+    }
+
+    function startNewGame() {
+      initGame();
+    }
+
+    function initGame() {
+      // Reset game state
+      gameState.currentPath = [];
+      gameState.correctPath = [];
+      gameState.gameOver = false;
+      gameState.score = 0;
+      gameState.moves = 0;
+      gameState.startTime = Date.now();
+
+      scoreElement.textContent = '0';
+      movesElement.textContent = '0';
+      timeElement.textContent = '0';
+
+      messageElement.textContent = 'Find the path from START to END!';
+      messageElement.style.background = 'rgba(255, 255, 255, 0.1)';
+
+      // Clear existing timer
+      if (gameState.timer) {
+        clearInterval(gameState.timer);
+      }
+
+      // Start timer
+      gameState.timer = setInterval(updateTimer, 1000);
+
+      // Generate game
+      generateCorrectPath();
+      createBoard();
+    }
+
+    function generateCorrectPath() {
+      const size = gameState.boardSize;
+      let x = 0, y = 0;
+      gameState.correctPath = [{ x, y }];
+
+      // Enhanced randomness: allow up to 30% backtracking and diagonal moves on higher difficulties
+      const allowDiagonals = gameState.difficulty >= 9;
+      const maxBacktracks = Math.floor(size * 0.3);
+
+      let backtracks = 0;
+
+      while (x < size - 1 || y < size - 1) {
+        const possibleMoves = [];
+
+        // Standard moves
+        if (x < size - 1) possibleMoves.push({ x: x + 1, y, type: 'right' });
+        if (y < size - 1) possibleMoves.push({ x, y: y + 1, type: 'down' });
+
+        // Diagonal moves for higher difficulties
+        if (allowDiagonals && x < size - 1 && y < size - 1) {
+          possibleMoves.push({ x: x + 1, y: y + 1, type: 'diagonal' });
+        }
+
+        // Backtracking moves (limited)
+        if (backtracks < maxBacktracks) {
+          if (x > 0 && Math.random() < 0.2) possibleMoves.push({ x: x - 1, y, type: 'left' });
+          if (y > 0 && Math.random() < 0.2) possibleMoves.push({ x, y: y - 1, type: 'up' });
+        }
+
+        // Weight moves based on type for more interesting paths
+        const weightedMoves = [];
+        possibleMoves.forEach(move => {
+          let weight = 1;
+          if (move.type === 'diagonal') weight = 0.7;
+          if (move.type === 'left' || move.type === 'up') {
+            weight = 0.3;
+            backtracks++;
+          }
+
+          for (let i = 0; i < weight * 10; i++) {
+            weightedMoves.push(move);
+          }
         });
 
-        // Screen Management
-        function showHomeScreen() {
-            gameScreen.classList.remove('active');
-            homeScreen.classList.add('active');
-            clearInterval(gameState.timer);
+        const nextMove = weightedMoves[Math.floor(Math.random() * weightedMoves.length)];
+        gameState.correctPath.push(nextMove);
+        x = nextMove.x;
+        y = nextMove.y;
+      }
+
+      // Add some random noise to the path (10% chance to add extra steps)
+      if (Math.random() < 0.1) {
+        const extraSteps = Math.floor(size * 0.1);
+        for (let i = 0; i < extraSteps; i++) {
+          const insertIndex = Math.floor(Math.random() * (gameState.correctPath.length - 2)) + 1;
+          const current = gameState.correctPath[insertIndex];
+          const next = gameState.correctPath[insertIndex + 1];
+
+          // Create a detour
+          if (current.x !== next.x && current.y !== next.y) {
+            const detour = { x: next.x, y: current.y };
+            gameState.correctPath.splice(insertIndex + 1, 0, detour);
+          }
         }
+      }
+    }
 
-        function showGameScreen() {
-            homeScreen.classList.remove('active');
-            gameScreen.classList.add('active');
+    function createBoard() {
+      boardElement.innerHTML = '';
+      boardElement.style.gridTemplateColumns = `repeat(${gameState.boardSize}, 1fr)`;
+
+      for (let y = 0; y < gameState.boardSize; y++) {
+        for (let x = 0; x < gameState.boardSize; x++) {
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+          cell.dataset.x = x;
+          cell.dataset.y = y;
+
+          if (x === 0 && y === 0) {
+            cell.classList.add('start');
+            cell.textContent = 'S';
+          } else if (x === gameState.boardSize - 1 && y === gameState.boardSize - 1) {
+            cell.classList.add('end');
+            cell.textContent = 'E';
+          }
+
+          cell.addEventListener('click', () => handleCellClick(x, y));
+          boardElement.appendChild(cell);
         }
+      }
+    }
 
-        // Game Functions
-        function startGame() {
-            gameState.boardSize = gameState.difficulty;
-            showGameScreen();
-            initGame();
+    function handleCellClick(x, y) {
+      if (gameState.gameOver) return;
+
+      const clickedIndex = gameState.currentPath.length;
+      const correctNextStep = gameState.correctPath[clickedIndex];
+
+      if (x === correctNextStep.x && y === correctNextStep.y) {
+        // Correct guess
+        gameState.currentPath.push({ x, y });
+        gameState.moves++;
+        gameState.score += Math.max(1, 15 - gameState.moves);
+        movesElement.textContent = gameState.moves;
+        scoreElement.textContent = gameState.score;
+        updateBoard();
+
+        if (x === gameState.boardSize - 1 && y === gameState.boardSize - 1) {
+          // Game completed
+          gameState.gameOver = true;
+          gameState.score += Math.max(50, 200 - (Date.now() - gameState.startTime) / 1000);
+          scoreElement.textContent = Math.floor(gameState.score);
+
+          messageElement.textContent = `🎉 Perfect! Final Score: ${Math.floor(gameState.score)}`;
+          messageElement.style.background = 'rgba(76, 175, 80, 0.3)';
+
+          clearInterval(gameState.timer);
+        } else {
+          messageElement.textContent = '✅ Correct! Continue...';
+          messageElement.style.background = 'rgba(72, 219, 251, 0.3)';
         }
+      } else {
+        // Wrong guess
+        gameState.gameOver = true;
+        gameState.moves++;
+        movesElement.textContent = gameState.moves;
 
-        function startNewGame() {
-            initGame();
+        messageElement.textContent = '❌ Wrong path! Try again.';
+        messageElement.style.background = 'rgba(255, 107, 107, 0.3)';
+
+        revealPath();
+        clearInterval(gameState.timer);
+      }
+    }
+
+    function updateBoard() {
+      const cells = document.querySelectorAll('.cell');
+      cells.forEach(cell => {
+        cell.classList.remove('correct', 'wrong');
+      });
+
+      gameState.currentPath.forEach(step => {
+        const cell = document.querySelector(`.cell[data-x="${step.x}"][data-y="${step.y}"]`);
+        if (cell && !cell.classList.contains('start') && !cell.classList.contains('end')) {
+          cell.classList.add('correct');
+          cell.textContent = gameState.currentPath.indexOf(step) + 1;
         }
+      });
+    }
 
-        function initGame() {
-            // Reset game state
-            gameState.currentPath = [];
-            gameState.correctPath = [];
-            gameState.gameOver = false;
-            gameState.score = 0;
-            gameState.moves = 0;
-            gameState.startTime = Date.now();
-            
-            scoreElement.textContent = '0';
-            movesElement.textContent = '0';
-            timeElement.textContent = '0';
-            
-            messageElement.textContent = 'Find the path from START to END!';
-            messageElement.style.background = 'rgba(255, 255, 255, 0.1)';
-            
-            // Clear existing timer
-            if (gameState.timer) {
-                clearInterval(gameState.timer);
-            }
-            
-            // Start timer
-            gameState.timer = setInterval(updateTimer, 1000);
-            
-            // Generate game
-            generateCorrectPath();
-            createBoard();
+    function revealPath() {
+      gameState.correctPath.forEach(step => {
+        const cell = document.querySelector(`.cell[data-x="${step.x}"][data-y="${step.y}"]`);
+        if (cell && !cell.classList.contains('start') && !cell.classList.contains('end')) {
+          cell.classList.add('correct');
+          cell.textContent = gameState.correctPath.indexOf(step) + 1;
         }
+      });
+    }
 
-        function generateCorrectPath() {
-            const size = gameState.boardSize;
-            let x = 0, y = 0;
-            gameState.correctPath = [{x, y}];
+    function updateTimer() {
+      const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+      timeElement.textContent = elapsed;
 
-            // Enhanced randomness: allow up to 30% backtracking and diagonal moves on higher difficulties
-            const allowDiagonals = gameState.difficulty >= 9;
-            const maxBacktracks = Math.floor(size * 0.3);
-
-            let backtracks = 0;
-            
-            while (x < size - 1 || y < size - 1) {
-                const possibleMoves = [];
-                
-                // Standard moves
-                if (x < size - 1) possibleMoves.push({x: x + 1, y, type: 'right'});
-                if (y < size - 1) possibleMoves.push({x, y: y + 1, type: 'down'});
-                
-                // Diagonal moves for higher difficulties
-                if (allowDiagonals && x < size - 1 && y < size - 1) {
-                    possibleMoves.push({x: x + 1, y: y + 1, type: 'diagonal'});
-                }
-                
-                // Backtracking moves (limited)
-                if (backtracks < maxBacktracks) {
-                    if (x > 0 && Math.random() < 0.2) possibleMoves.push({x: x - 1, y, type: 'left'});
-                    if (y > 0 && Math.random() < 0.2) possibleMoves.push({x, y: y - 1, type: 'up'});
-                }
-
-                // Weight moves based on type for more interesting paths
-                const weightedMoves = [];
-                possibleMoves.forEach(move => {
-                    let weight = 1;
-                    if (move.type === 'diagonal') weight = 0.7;
-                    if (move.type === 'left' || move.type === 'up') {
-                        weight = 0.3;
-                        backtracks++;
-                    }
-                    
-                    for (let i = 0; i < weight * 10; i++) {
-                        weightedMoves.push(move);
-                    }
-                });
-
-                const nextMove = weightedMoves[Math.floor(Math.random() * weightedMoves.length)];
-                gameState.correctPath.push(nextMove);
-                x = nextMove.x;
-                y = nextMove.y;
-            }
-
-            // Add some random noise to the path (10% chance to add extra steps)
-            if (Math.random() < 0.1) {
-                const extraSteps = Math.floor(size * 0.1);
-                for (let i = 0; i < extraSteps; i++) {
-                    const insertIndex = Math.floor(Math.random() * (gameState.correctPath.length - 2)) + 1;
-                    const current = gameState.correctPath[insertIndex];
-                    const next = gameState.correctPath[insertIndex + 1];
-                    
-                    // Create a detour
-                    if (current.x !== next.x && current.y !== next.y) {
-                        const detour = {x: next.x, y: current.y};
-                        gameState.correctPath.splice(insertIndex + 1, 0, detour);
-                    }
-                }
-            }
-        }
-
-        function createBoard() {
-            boardElement.innerHTML = '';
-            boardElement.style.gridTemplateColumns = `repeat(${gameState.boardSize}, 1fr)`;
-
-            for (let y = 0; y < gameState.boardSize; y++) {
-                for (let x = 0; x < gameState.boardSize; x++) {
-                    const cell = document.createElement('div');
-                    cell.className = 'cell';
-                    cell.dataset.x = x;
-                    cell.dataset.y = y;
-
-                    if (x === 0 && y === 0) {
-                        cell.classList.add('start');
-                        cell.textContent = 'S';
-                    } else if (x === gameState.boardSize - 1 && y === gameState.boardSize - 1) {
-                        cell.classList.add('end');
-                        cell.textContent = 'E';
-                    }
-
-                    cell.addEventListener('click', () => handleCellClick(x, y));
-                    boardElement.appendChild(cell);
-                }
-            }
-        }
-
-        function handleCellClick(x, y) {
-            if (gameState.gameOver) return;
-
-            const clickedIndex = gameState.currentPath.length;
-            const correctNextStep = gameState.correctPath[clickedIndex];
-
-            if (x === correctNextStep.x && y === correctNextStep.y) {
-                // Correct guess
-                gameState.currentPath.push({x, y});
-                gameState.moves++;
-                gameState.score += Math.max(1, 15 - gameState.moves);
-                movesElement.textContent = gameState.moves;
-                scoreElement.textContent = gameState.score;
-                updateBoard();
-
-                if (x === gameState.boardSize - 1 && y === gameState.boardSize - 1) {
-                    // Game completed
-                    gameState.gameOver = true;
-                    gameState.score += Math.max(50, 200 - (Date.now() - gameState.startTime) / 1000);
-                    scoreElement.textContent = Math.floor(gameState.score);
-                    
-                    messageElement.textContent = `🎉 Perfect! Final Score: ${Math.floor(gameState.score)}`;
-                    messageElement.style.background = 'rgba(76, 175, 80, 0.3)';
-                    
-                    clearInterval(gameState.timer);
-                } else {
-                    messageElement.textContent = '✅ Correct! Continue...';
-                    messageElement.style.background = 'rgba(72, 219, 251, 0.3)';
-                }
-            } else {
-                // Wrong guess
-                gameState.gameOver = true;
-                gameState.moves++;
-                movesElement.textContent = gameState.moves;
-                
-                messageElement.textContent = '❌ Wrong path! Try again.';
-                messageElement.style.background = 'rgba(255, 107, 107, 0.3)';
-                
-                revealPath();
-                clearInterval(gameState.timer);
-            }
-        }
-
-        function updateBoard() {
-            const cells = document.querySelectorAll('.cell');
-            cells.forEach(cell => {
-                cell.classList.remove('correct', 'wrong');
-            });
-
-            gameState.currentPath.forEach(step => {
-                const cell = document.querySelector(`.cell[data-x="${step.x}"][data-y="${step.y}"]`);
-                if (cell && !cell.classList.contains('start') && !cell.classList.contains('end')) {
-                    cell.classList.add('correct');
-                    cell.textContent = gameState.currentPath.indexOf(step) + 1;
-                }
-            });
-        }
-
-        function revealPath() {
-            gameState.correctPath.forEach(step => {
-                const cell = document.querySelector(`.cell[data-x="${step.x}"][data-y="${step.y}"]`);
-                if (cell && !cell.classList.contains('start') && !cell.classList.contains('end')) {
-                    cell.classList.add('correct');
-                    cell.textContent = gameState.correctPath.indexOf(step) + 1;
-                }
-            });
-        }
-
-        function updateTimer() {
-            const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
-            timeElement.textContent = elapsed;
-            
-            // Update score based on time (faster completion = higher score)
-            if (!gameState.gameOver) {
-                gameState.score = Math.max(0, gameState.score - 0.1);
-                scoreElement.textContent = Math.floor(gameState.score);
-            }
-        }
-    </script>
+      // Update score based on time (faster completion = higher score)
+      if (!gameState.gameOver) {
+        gameState.score = Math.max(0, gameState.score - 0.1);
+        scoreElement.textContent = Math.floor(gameState.score);
+      }
+    }
+  </script>
 </body>
+
 </html>
