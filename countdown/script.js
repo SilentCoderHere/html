@@ -1,3 +1,4 @@
+<<<<<<< refs/remotes/origin/main
 const targetDate = new Date("March 9, 2026 00:00:00").getTime();
 const daysElement = document.getElementById("days");
 const hoursElement = document.getElementById("hours");
@@ -70,6 +71,58 @@ function updateCountdown() {
     secondsElement.textContent = "00";
     completedMessage.style.display = "block";
     document.querySelector(".countdown-container").style.display = "none";
+=======
+// Configuration
+const START_DATE = new Date("December 8, 2025 00:00:00").getTime();
+const TARGET_DATE = new Date("March 9, 2026 00:00:00").getTime();
+
+// DOM Elements
+const daysElement = document.getElementById("days");
+const hoursElement = document.getElementById("hours");
+const minutesElement = document.getElementById("minutes");
+const secondsElement = document.getElementById("seconds");
+const completedMessage = document.getElementById("completedMessage");
+const percentageElement = document.getElementById("percentage");
+const progressFill = document.getElementById("progressFill");
+const progressMarker = document.getElementById("progressMarker");
+const elapsedTimeElement = document.getElementById("elapsedTime");
+const remainingTimeElement = document.getElementById("remainingTime");
+
+let countdownInterval;
+
+// Update Progress Bar - Fixed UI Bug
+function updateProgressBar() {
+  const now = new Date().getTime();
+  const totalDuration = TARGET_DATE - START_DATE;
+  const elapsed = Math.max(0, now - START_DATE);
+  const progressPercent = Math.min((elapsed / totalDuration) * 100, 100);
+  
+  // Fix progress bar overflow bug
+  const safePercent = Math.min(Math.max(progressPercent, 0), 100);
+  
+  // Update progress bar
+  progressFill.style.width = `${safePercent}%`;
+  progressMarker.style.left = `${safePercent}%`;
+  percentageElement.textContent = `${safePercent.toFixed(5)}%`;
+  
+  // Update time stats
+  const daysElapsed = Math.floor(elapsed / (1000 * 60 * 60 * 24));
+  const daysRemaining = Math.max(0, Math.floor((TARGET_DATE - now) / (1000 * 60 * 60 * 24)));
+  
+  elapsedTimeElement.textContent = `${daysElapsed} days passed`;
+  remainingTimeElement.textContent = `${daysRemaining} days left`;
+  
+  return safePercent;
+}
+
+// Update Countdown
+function updateCountdown() {
+  const now = new Date().getTime();
+  const distance = TARGET_DATE - now;
+  
+  if (distance < 0) {
+    handleCountdownComplete();
+>>>>>>> countdown ui update
     return;
   }
 
@@ -79,6 +132,7 @@ function updateCountdown() {
   );
   const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+<<<<<<< refs/remotes/origin/main
 
   // Remove animation classes first
   daysElement.classList.remove("changed");
@@ -201,3 +255,70 @@ document.addEventListener("mousemove", (e) => {
 document.addEventListener("click", (e) => {
   createSparkle(e.clientX, e.clientY);
 });
+=======
+  
+  updateValue(daysElement, days);
+  updateValue(hoursElement, hours);
+  updateValue(minutesElement, minutes);
+  updateValue(secondsElement, seconds);
+  
+  updateProgressBar();
+}
+
+function updateValue(element, value) {
+  const formattedValue = value < 10 ? `0${value}` : value;
+  if (element.textContent !== formattedValue) {
+    element.textContent = formattedValue;
+    element.classList.add('changed');
+    setTimeout(() => element.classList.remove('changed'), 500);
+  }
+}
+
+function handleCountdownComplete() {
+  clearInterval(countdownInterval);
+  
+  daysElement.textContent = "00";
+  hoursElement.textContent = "00";
+  minutesElement.textContent = "00";
+  secondsElement.textContent = "00";
+  
+  completedMessage.style.display = "block";
+  
+  // Set progress to 100% with safety check
+  progressFill.style.width = "100%";
+  progressMarker.style.left = "100%";
+  percentageElement.textContent = "100%";
+  remainingTimeElement.textContent = "0 days left";
+  
+  // Add completion animation to progress bar
+  progressFill.style.background = "linear-gradient(90deg, #ffd700, #ffa500, #ffd700)";
+  progressFill.style.backgroundSize = "200% 100%";
+  progressFill.style.animation = "shimmer 1.5s infinite";
+}
+
+// Initialize
+function init() {
+  // Check if elements exist before updating
+  if (progressFill && progressMarker) {
+    updateProgressBar();
+  }
+  
+  if (daysElement && hoursElement && minutesElement && secondsElement) {
+    updateCountdown();
+  }
+  
+  countdownInterval = setInterval(updateCountdown, 1000);
+}
+
+// Start when DOM is loaded
+document.addEventListener('DOMContentLoaded', init);
+
+// Handle page visibility changes
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden) {
+    // Update immediately when page becomes visible again
+    updateCountdown();
+    updateProgressBar();
+  }
+});
+>>>>>>> countdown ui update
