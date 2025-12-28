@@ -1,5 +1,5 @@
 const START_DATE = new Date("December 8, 2025 00:00:00").getTime();
-const TARGET_DATE = new Date("March 9, 2026 00:00:00").getTime();
+const TARGET_DATE = new Date("January 9, 2026 00:00:00").getTime();
 
 const daysElement = document.getElementById("days");
 const hoursElement = document.getElementById("hours");
